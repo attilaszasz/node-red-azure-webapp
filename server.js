@@ -4,7 +4,9 @@ process.env.Path = 'D:\\Program Files\\Git\\cmd;D:\\Program Files\\Git\\usr\\bin
 var express = require("express");
 var RED=require('node-red');
 var app= express();
- var http=require('http');
+var http=require('http');
+let appInsights = require("applicationinsights");
+appInsights.setup().start();
 
 const PORT=process.env.PORT||8000;
 

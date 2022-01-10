@@ -63,6 +63,45 @@
 
   },
   "resources": [
+{
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2021-06-01",
+      "name": "[parameters('siteName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "Log Analytics",
+        "ProjectName": "[parameters('siteName')]"
+      },
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30,
+        "features": {
+          "searchVersion": 1,
+          "legacy": 0,
+          "enableLogAccessUsingOnlyResourcePermissions": true
+        }
+      }
+    },    
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[parameters('siteName')]",
+      "location": "[resourceGroup().location]",
+      "kind": "string",
+      "tags": {
+        "displayName": "AppInsight",
+        "ProjectName": "[parameters('siteName')]"
+      },
+      "properties": {
+        "Application_Type": "web",
+        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('siteName'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('siteName'))]"
+      ]
+    },    
     {
       "apiVersion": "2021-02-01",
       "name": "[variables('hostingPlanName')]",
@@ -86,15 +125,22 @@
       },
       "type": "Microsoft.Web/sites",
       "location": "[resourceGroup().location]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]"        
+        "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('siteName'))]"     
       ],
       "properties": {
         "serverFarmId": "[variables('hostingPlanName')]",
+        "httpsOnly": true,
+
         "siteConfig": {
           "webSocketsEnabled": true,
           "alwaysOn": "[variables('alwaysOnValue')[parameters('sku')]]",
-          "phpVersion":""
+          "phpVersion":"",
+          "minTlsVersion": "1.2"
         }
       },
       "resources": [
@@ -112,6 +158,55 @@
           }
         }
       ]
-    }    
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2021-02-01",
+      "name": "[format('{0}/{1}', parameters('siteName'), 'appsettings')]",
+      "properties": {
+        "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('siteName'))).InstrumentationKey]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', parameters('siteName'))]",
+        "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
+        "[resourceId('Microsoft.Web/sites/siteextensions', parameters('siteName'), 'Microsoft.ApplicationInsights.AzureWebSites')]"
+      ]
+    },    
+    {
+      "type": "Microsoft.Web/sites/siteextensions",
+      "apiVersion": "2021-02-01",
+      "name": "[format('{0}/{1}', parameters('siteName'), 'Microsoft.ApplicationInsights.AzureWebSites')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', parameters('siteName'))]",
+        "[resourceId('Microsoft.Web/sites', parameters('siteName'))]"
+      ]
+    },    
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2021-02-01",
+      "name": "[format('{0}/{1}', parameters('siteName'), 'logs')]",
+      "properties": {
+        "applicationLogs": {
+          "fileSystem": {
+            "level": "Warning"
+          }
+        },
+        "httpLogs": {
+          "fileSystem": {
+            "retentionInMb": 40,
+            "enabled": true
+          }
+        },
+        "failedRequestsTracing": {
+          "enabled": true
+        },
+        "detailedErrorMessages": {
+          "enabled": true
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('siteName'))]"
+      ]
+    }
   ]
 }
