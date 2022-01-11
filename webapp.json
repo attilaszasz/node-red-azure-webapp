@@ -180,7 +180,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Insights/components', parameters('siteName'))]",
         "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
-        "[resourceId('Microsoft.Web/sites/config', format('{0}/{1}', parameters('siteName'), 'logs'))]"
+        "[resourceId('Microsoft.Web/sites/config', parameters('siteName'), 'logs')]",
+        "[resourceId('Microsoft.Web/sites/sourcecontrols', parameters('siteName'), 'web')]"
       ]
     },    
     {
