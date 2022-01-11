@@ -179,7 +179,8 @@
       "name": "[format('{0}/{1}', parameters('siteName'), 'Microsoft.ApplicationInsights.AzureWebSites')]",
       "dependsOn": [
         "[resourceId('Microsoft.Insights/components', parameters('siteName'))]",
-        "[resourceId('Microsoft.Web/sites', parameters('siteName'))]"
+        "[resourceId('Microsoft.Web/sites', parameters('siteName'))]",
+        "[resourceId('Microsoft.Web/sites/config', format('{0}/{1}', parameters('siteName'), 'logs'))]"
       ]
     },    
     {
