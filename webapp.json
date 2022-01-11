@@ -128,6 +128,7 @@
       "identity": {
         "type": "SystemAssigned"
       },
+      "kind": "app,linux",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('siteName'))]"     
@@ -202,7 +203,10 @@
         },
         "detailedErrorMessages": {
           "enabled": true
-        }
+        },
+        "netFrameworkVersion": "v4.0",
+        "linuxFxVersion": "NODE|14-lts",
+        "use32BitWorkerProcess": true
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', parameters('siteName'))]"
