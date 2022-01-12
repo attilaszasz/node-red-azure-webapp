@@ -1,24 +1,19 @@
-# node-red-azure-webapp
+# Node Red Azure Web App Wrapper
 A webapp wrapper for running node-red in an Azure Web App.
-To use it just:
 
-1. Deploy to Azure with this button:
+This a fork of Juan Manuel Servera's **node-red-azure-webapp**  
+Notable changes:
+- Node Red updated to version 2.x
+- Added monitoring via Application Insights
+- Several Node Red nodes added and/or updated
+
+## How to set up
+
+Deploy to Azure with this button:
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fattilaszasz%2Fnode-red-azure-webapp%2Fmaster%2Fwebapp.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
 
-Or...
-
-1. Create an Azure Web App
-1. Open the settings and activate **Web sockets**
-
-    ![Web sockets](./_images/websockets.png)
-
-    **Figure 1** Activate Web sockets
-1. Configure the deployment options as an *External repository* pointing to [https://github.com/attilaszasz/node-red-azure-webapp.git](https://github.com/attilaszasz/node-red-azure-webapp.git)
-
-    ![External repo](./_images/externalrepo.png)
-
-    **Figure 2** External Repository
+The deployment will create a new serverfarm, website, application insight. The website will be configured with the application insight Instrumentation Key.
 
 > This project currently uses a workaround to avoid a small problem caused with `child_process.execFile`: it uses a fake npm.cmd that points to the real one.
 
@@ -39,12 +34,13 @@ You can see the live log in the Azure Portal, in the *Log stream* tab:
 It comes with some cool nodes preinstalled:
 
 * Dashboard (create an awesome ui and see it in https://yoursite/ui )
-* Azure IoT Hub
 * Cognitive Services
 * Azure Storage (Blobs & Tables)
-* DocumentDB
+* CosmosDB
 * Azure SQL
+* Azure Service Bus (Topics and Queues)
 * Swagger node
+* Email
 
 ## Securing your deployment
 
