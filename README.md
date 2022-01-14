@@ -5,7 +5,6 @@ This a fork of Juan Manuel Servera's **node-red-azure-webapp**
 Notable changes:
 - Node Red updated to version 2.x
 - Added monitoring via Application Insights
-- Several Node Red nodes added and/or updated
 
 ## How to set up
 
@@ -13,34 +12,57 @@ Deploy to Azure with this button:
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fattilaszasz%2Fnode-red-azure-webapp%2Fmaster%2Fwebapp.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
 
-The deployment will create a new serverfarm, website, application insight. The website will be configured with the application insight Instrumentation Key.
+The deployment will create a new serverfarm website application insight. The website will be configured with the application insight Instrumentation Key.
+
+**Note**: The `Microsoft.Web/sites/sourcecontrols` deployment step takes a really long time as it performs an `npm install`  
 
 > This project currently uses a workaround to avoid a small problem caused with `child_process.execFile`: it uses a fake npm.cmd that points to the real one.
 
 ## Usage
 
-Wait until everything is deployed before opening the website, during the deployment a script is executed to download this repo and install all the needed modules. If you see this screen just wait about 30 seconds to let the Node-RED app start:
+Wait until everything is deployed before opening the website during the deployment a script is executed to download this repo and install all the needed modules. If you see this screen just wait about 30 seconds to let the Node-RED app start:
 
 ![Not Started Site](./_images/notstarted.png)
 
 **Figure 3** Not Started Site
 
-You can see the live log in the Azure Portal, in the *Log stream* tab:
+You can see the live log in the Azure Portal in the *Log stream* tab:
 
 ![Application logs stream](./_images/logstream.png)
 
 **Figure 4** Application logs stream
 
-It comes with some cool nodes preinstalled:
+## Packages
+It comes with dashboard preinstalled:
 
 * Dashboard (create an awesome ui and see it in https://yoursite/ui )
-* Cognitive Services
-* Azure Storage (Blobs & Tables)
-* CosmosDB
-* Azure SQL
-* Azure Service Bus (Topics and Queues)
-* Swagger node
-* Email
+
+Recommended packages to install:
+
+node-red-contrib-azure-blob-storage-aleph  
+node-red-contrib-cosmos-db  
+node-red-contrib-azure-sql  
+node-red-contrib-azure-table-storage-aleph  
+node-red-contrib-mssql-plus  
+node-red-contrib-azure-service-bus-topic  
+node-red-contrib-azure-service-bus-queue  
+node-red-contrib-cognitive-services  
+node-red-dashboard  
+node-red-node-swagger  
+node-red-node-email  
+node-red-contrib-actionflows  
+node-red-node-rbe  
+node-red-contrib-bigtimer  
+node-red-contrib-counter  
+node-red-contrib-influxdb  
+node-red-contrib-persistent-fsm  
+node-red-contrib-postgresql  
+node-red-node-mysql  
+node-red-node-twilio  
+node-red-contrib-sendgrid  
+node-red-node-sqlite  
+node-red-node-mongodb  
+node-red-contrib-redis  
 
 ## Securing your deployment
 
